@@ -19,6 +19,9 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Plugin(
         id = "coloranvil",
         name = "ColorAnvil",
@@ -34,6 +37,8 @@ public class ColorAnvil {
     private Logger logger;
     @Inject
     private PluginContainer instance;
+
+    private Pattern formatCodePattern = Pattern.compile("&([a-z])");
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
@@ -67,6 +72,17 @@ public class ColorAnvil {
                         // Grab the display name for the item
                         Text itemName = originalStack.get(Keys.DISPLAY_NAME).orElse(Text.of(originalStack.getTranslation()));
                         String itemNamePlain = itemName.toPlain();
+
+                        // Loop through the plain text and filter out any format codes the player doesn't have permission to use
+                        Matcher matcher = formatCodePattern.matcher(itemNamePlain);
+                        StringBuffer sb = new StringBuffer();
+                        while (matcher.find()) {
+                            if (player.hasPermission("coloranvil.format." + matcher.group(1))) {
+                                matcher.appendReplacement(sb, "");
+                            }
+                        }
+                        matcher.appendTail(sb);
+                        itemNamePlain = sb.toString();
 
                         // Deserialize the plain text, this time account for formatting codes, offer it back to the item
                         itemName = TextSerializers.FORMATTING_CODE.deserialize(itemNamePlain);
