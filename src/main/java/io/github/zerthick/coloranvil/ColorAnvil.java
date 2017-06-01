@@ -57,7 +57,7 @@ public class ColorAnvil {
     @Inject
     private PluginContainer instance;
 
-    private Pattern formatCodePattern = Pattern.compile("&([a-z])");
+    private Pattern formatCodePattern = Pattern.compile("&([a-z0-9])");
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
