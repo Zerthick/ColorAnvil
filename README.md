@@ -7,7 +7,7 @@ For example, if I wanted to change the color of a Diamond Sword's name to dark-r
 # Permissions
 
 * `coloranvil.use` - Allows the player to utilize formatting codes while naming items.  
-* `coloranvil.color.<format_code>` - Allows the player to utilize a specific formatting code where `<format_code>` is the code without the `&`. 
+* `coloranvil.color.<format_code>` - Allows the player to utilize a specific formatting code where `format_code` is the code without the `&`. 
   * **Ex:** `coloranvil.color.a`
 
 ## Support Me
