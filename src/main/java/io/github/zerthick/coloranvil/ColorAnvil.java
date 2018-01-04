@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Zerthick
+ * Copyright (C) 2018  Zerthick
  *
  * This file is part of ColorAnvil.
  *
@@ -25,7 +25,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.filter.Getter;
-import org.spongepowered.api.event.filter.cause.Root;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
@@ -44,7 +44,6 @@ import java.util.regex.Pattern;
 @Plugin(
         id = "coloranvil",
         name = "ColorAnvil",
-        version = "1.0.0",
         description = "Name Items With Color!",
         authors = {
                 "Zerthick"
@@ -70,7 +69,7 @@ public class ColorAnvil {
 
 
     @Listener
-    public void onItemForge(ClickInventoryEvent event, @Root Player player, @Getter("getTargetInventory") Inventory inventory) {
+    public void onItemForge(ClickInventoryEvent event, @First Player player, @Getter("getTargetInventory") Inventory inventory) {
 
         // If the inventory in question is an anvil, and the player has the appropriate permissions
         if (inventory.getArchetype() == InventoryArchetypes.ANVIL && player.hasPermission("coloranvil.use")) {
@@ -86,7 +85,7 @@ public class ColorAnvil {
                     ItemStack originalStack = slotTransaction.getOriginal().createStack();
 
                     // Check to make sure that the player didn't click on the empty output slot with an item
-                    if (originalStack.getItem() != ItemTypes.AIR) {
+                    if (originalStack.getType() != ItemTypes.AIR) {
 
                         // Grab the display name for the item
                         Text itemName = originalStack.get(Keys.DISPLAY_NAME).orElse(Text.of(originalStack.getTranslation()));
