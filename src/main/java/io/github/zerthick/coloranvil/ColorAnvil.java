@@ -112,7 +112,7 @@ public class ColorAnvil {
                         event.getCursorTransaction().setCustom(originalStack.createSnapshot());
                     }
                 } else if (slotTransaction.getSlot() instanceof InputSlot &&
-                        slotTransaction.getFinal().equals(event.getCursorTransaction().getOriginal())) {
+                        slotTransaction.getFinal().equals(event.getCursorTransaction().getOriginal())) { // If the player places an item in the first input slot
 
                     slotTransaction.getSlot().getProperties(SlotIndex.class).stream().findFirst().ifPresent(slotIndex -> {
                         if (slotIndex.getValue() != null && slotIndex.getValue() == 0) { // If they clicked on the first input slot
@@ -130,7 +130,6 @@ public class ColorAnvil {
                             });
                         }
                     });
-
                 }
             });
 
