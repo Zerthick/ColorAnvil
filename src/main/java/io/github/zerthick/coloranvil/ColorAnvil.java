@@ -32,6 +32,8 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.property.SlotIndex;
+import org.spongepowered.api.item.inventory.slot.InputSlot;
 import org.spongepowered.api.item.inventory.slot.OutputSlot;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -109,10 +111,29 @@ public class ColorAnvil {
                         // Update the item in the cursor transaction for this event to reflect the itemstack with the colored name
                         event.getCursorTransaction().setCustom(originalStack.createSnapshot());
                     }
+                } else if (slotTransaction.getSlot() instanceof InputSlot &&
+                        slotTransaction.getFinal().equals(event.getCursorTransaction().getOriginal())) {
+
+                    slotTransaction.getSlot().getProperties(SlotIndex.class).stream().findFirst().ifPresent(slotIndex -> {
+                        if (slotIndex.getValue() != null && slotIndex.getValue() == 0) { // If they clicked on the first input slot
+                            slotTransaction.getSlot().peek().ifPresent(itemStack -> {
+
+                                // Grab the display name for the item
+                                Text itemName = itemStack.get(Keys.DISPLAY_NAME).orElse(Text.of(itemStack.getTranslation()));
+
+                                // Serialize it to preserve formatting codes
+                                String itemNameSerialized = TextSerializers.FORMATTING_CODE.serialize(itemName);
+                                itemStack.offer(Keys.DISPLAY_NAME, Text.of(itemNameSerialized));
+
+                                // Update the item in the slot transaction for this event to reflect the itemstack with the serialized name
+                                slotTransaction.setCustom(itemStack);
+                            });
+                        }
+                    });
+
                 }
             });
 
         }
     }
-
 }
